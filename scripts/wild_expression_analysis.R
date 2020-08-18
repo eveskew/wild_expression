@@ -100,10 +100,12 @@ group.labels <- d %>%
     time_point_short = str_replace_all(time_point, " ", ""),
     time_point_short = substr(time_point_short, 1, 3),
     time_point_short = 
-      ifelse(!str_detect(time_point_short, "d"), "op", time_point_short),
+      ifelse(str_detect(time_point_short, "opp"), "op", time_point_short),
+    time_point_short =
+      ifelse(str_detect(time_point_short, "atc"), "cs", time_point_short),
     tissue_short = substr(tissue, 1, 2),
     bottom_label = 
-      paste0(first_line, "\n", tissue_short, "\n", time_point_short)
+      paste0(first_line, "\n", time_point_short)
   ) %>%
   select(group_de, bottom_label)
 
@@ -123,7 +125,7 @@ segment.limits <- d %>%
 
 d %>%
   left_join(., segment.limits, by = "bottom_label") %>%
-  ggplot(aes(x = bottom_label, y = prop_de, color = susceptibility)) +
+  ggplot(aes(x = bottom_label, y = prop_de, color = susceptibility, shape = tissue)) +
   geom_segment(
     aes(x = bottom_label, xend = bottom_label, 
         y = min_measure, yend = max_measure),
@@ -131,6 +133,7 @@ d %>%
   ) +
   geom_point(size = 8) +
   scale_color_manual(values = alpha(c("dodgerblue", "firebrick2"), 0.7)) +
+  scale_shape_manual(values = c(17, 15, 16, 18)) +
   ylab("Proportion of genes/contigs/probes differentially expressed") +
   theme_minimal() +
   theme(
@@ -142,8 +145,10 @@ d %>%
     axis.title.y = element_text(size = 34),
     legend.text = element_text(size = 34),
     legend.position = "bottom",
+    legend.box = "vertical",
     legend.title = element_blank()
   ) +
+  guides(color = guide_legend(order = 1)) +
   facet_wrap(~study_mod_simple, scales = "free_x", nrow = 1)
 
 ggsave("outputs/fig1.jpeg", width = 30, height = 15)
