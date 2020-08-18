@@ -1,0 +1,26 @@
+Comparison Label,Study,Assay,Pathogen,Host Class,Host Comparison,Tissue Sampled,Sampling Time Point,Pathogen Strain
+Br1,Bracamonte et al. 2019,RNA-seq,A. crassus,Actinopterygii,Anguilla japonica vs. Anguilla anguilla,kidney,03 days,NA
+Br2,Bracamonte et al. 2019,RNA-seq,A. crassus,Actinopterygii,Anguilla japonica vs. Anguilla anguilla,kidney,23 days,NA
+Da1,Davy et al. 2017,RNA-seq,P. destructans,Mammalia,Myotis myotis vs. Myotis lucifugus,skin,77 days,NA
+El1,Ellison et al. 2015,RNA-seq,B. dendrobatidis,Amphibia,Agalychnis callidryas vs. Atelopus glyphus,skin,at clinical symptoms or experimental endpoint,NA
+El2,Ellison et al. 2015,RNA-seq,B. dendrobatidis,Amphibia,Agalychnis callidryas vs. Atelopus glyphus,spleen,at clinical symptoms or experimental endpoint,NA
+El3,Ellison et al. 2015,RNA-seq,B. dendrobatidis,Amphibia,Agalychnis callidryas vs. Atelopus zeteki,skin,at clinical symptoms or experimental endpoint,NA
+El4,Ellison et al. 2015,RNA-seq,B. dendrobatidis,Amphibia,Agalychnis callidryas vs. Atelopus zeteki,spleen,at clinical symptoms or experimental endpoint,NA
+El5,Ellison et al. 2015,RNA-seq,B. dendrobatidis,Amphibia,Craugastor fitzingeri vs. Atelopus glyphus,skin,at clinical symptoms or experimental endpoint,NA
+El6,Ellison et al. 2015,RNA-seq,B. dendrobatidis,Amphibia,Craugastor fitzingeri vs. Atelopus glyphus,spleen,at clinical symptoms or experimental endpoint,NA
+El7,Ellison et al. 2015,RNA-seq,B. dendrobatidis,Amphibia,Craugastor fitzingeri vs. Atelopus zeteki,skin,at clinical symptoms or experimental endpoint,NA
+El8,Ellison et al. 2015,RNA-seq,B. dendrobatidis,Amphibia,Craugastor fitzingeri vs. Atelopus zeteki,spleen,at clinical symptoms or experimental endpoint,NA
+Es1,Eskew et al. 2018,RNA-seq,B. dendrobatidis,Amphibia,Rana catesbeiana vs. Rana sylvatica,skin,03 days,Carter Meadow
+Es2,Eskew et al. 2018,RNA-seq,B. dendrobatidis,Amphibia,Rana catesbeiana vs. Rana sylvatica,skin,07 days,Carter Meadow
+Es3,Eskew et al. 2018,RNA-seq,B. dendrobatidis,Amphibia,Rana catesbeiana vs. Rana sylvatica,skin,10 days,Carter Meadow
+Es4,Eskew et al. 2018,RNA-seq,B. dendrobatidis,Amphibia,Rana catesbeiana vs. Rana sylvatica,skin,03 days,Section Line
+Es5,Eskew et al. 2018,RNA-seq,B. dendrobatidis,Amphibia,Rana catesbeiana vs. Rana sylvatica,skin,07 days,Section Line
+Es6,Eskew et al. 2018,RNA-seq,B. dendrobatidis,Amphibia,Rana catesbeiana vs. Rana sylvatica,skin,10 days,Section Line
+Li1,Lilley et al. 2019,RNA-seq,P. destructans,Mammalia,Myotis myotis vs. Myotis lucifugus,skin,opportunistic,NA
+Po1,Poorten and Rosenblum 2016,microarray,B. dendrobatidis,Amphibia,Bufo marinus vs. Bufo boreas,liver,18 days,NA
+Po2,Poorten and Rosenblum 2016,microarray,B. dendrobatidis,Amphibia,Bufo marinus vs. Bufo boreas,skin,18 days,NA
+Po3,Poorten and Rosenblum 2016,microarray,B. dendrobatidis,Amphibia,Bufo marinus vs. Bufo boreas,spleen,18 days,NA
+Su1,Sutherland et al. 2014,microarray,L. salmonis,Actinopterygii,Oncorhynchus gorbuscha vs. Oncorhynchus keta,kidney,06 days,NA
+Su2,Sutherland et al. 2014,microarray,L. salmonis,Actinopterygii,Oncorhynchus gorbuscha vs. Oncorhynchus keta,skin,06 days,NA
+Su3,Sutherland et al. 2014,microarray,L. salmonis,Actinopterygii,Oncorhynchus gorbuscha vs. Salmo salar,kidney,06 days,NA
+Su4,Sutherland et al. 2014,microarray,L. salmonis,Actinopterygii,Oncorhynchus gorbuscha vs. Salmo salar,skin,06 days,NA

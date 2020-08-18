@@ -1,0 +1,51 @@
+﻿study,assay,pathogen,host_class,host_species,host_species_common_name,susceptibility,comparison,tissue,time_point,pathogen_strain,total_tested,de,notes
+Bracamonte et al. 2019,RNA-seq,A. crassus,Actinopterygii,Anguilla japonica,Japanese eel,non-susceptible,Anguilla japonica vs. Anguilla anguilla,kidney,03 days,,241193,64,
+Bracamonte et al. 2019,RNA-seq,A. crassus,Actinopterygii,Anguilla japonica,Japanese eel,non-susceptible,Anguilla japonica vs. Anguilla anguilla,kidney,23 days,,241193,23,
+Bracamonte et al. 2019,RNA-seq,A. crassus,Actinopterygii,Anguilla anguilla,European eel,susceptible,Anguilla japonica vs. Anguilla anguilla,kidney,03 days,,503222,442,
+Bracamonte et al. 2019,RNA-seq,A. crassus,Actinopterygii,Anguilla anguilla,European eel,susceptible,Anguilla japonica vs. Anguilla anguilla,kidney,23 days,,503222,53,
+Davy et al. 2017,RNA-seq,P. destructans,Mammalia,Myotis myotis,greater mouse-eared bat,non-susceptible,Myotis myotis vs. Myotis lucifugus,skin,77 days,,757963,132,total Trinity genes; edgeR results
+Davy et al. 2017,RNA-seq,P. destructans,Mammalia,Myotis lucifugus,little brown bat,susceptible,Myotis myotis vs. Myotis lucifugus,skin,77 days,,26840,226,gene model from https://useast.ensembl.org/Myotis_lucifugus/Info/Annotation; edgeR results
+Ellison et al. 2015,RNA-seq,B. dendrobatidis,Amphibia,Atelopus zeteki,Panamanian golden frog,susceptible,Craugastor fitzingeri vs. Atelopus zeteki,skin,at clinical symptoms or experimental endpoint,,8732,3849,
+Ellison et al. 2015,RNA-seq,B. dendrobatidis,Amphibia,Craugastor fitzingeri,Fitzinger's robber frog,non-susceptible,Craugastor fitzingeri vs. Atelopus zeteki,skin,at clinical symptoms or experimental endpoint,,8732,1413,
+Ellison et al. 2015,RNA-seq,B. dendrobatidis,Amphibia,Atelopus zeteki,Panamanian golden frog,susceptible,Craugastor fitzingeri vs. Atelopus zeteki,spleen,at clinical symptoms or experimental endpoint,,8732,2291,
+Ellison et al. 2015,RNA-seq,B. dendrobatidis,Amphibia,Craugastor fitzingeri,Fitzinger's robber frog,non-susceptible,Craugastor fitzingeri vs. Atelopus zeteki,spleen,at clinical symptoms or experimental endpoint,,8732,2660,
+Ellison et al. 2015,RNA-seq,B. dendrobatidis,Amphibia,Atelopus zeteki,Panamanian golden frog,susceptible,Agalychnis callidryas vs. Atelopus zeteki,skin,at clinical symptoms or experimental endpoint,,8732,3849,
+Ellison et al. 2015,RNA-seq,B. dendrobatidis,Amphibia,Agalychnis callidryas,red-eyed treefrog,non-susceptible,Agalychnis callidryas vs. Atelopus zeteki,skin,at clinical symptoms or experimental endpoint,,8732,6,
+Ellison et al. 2015,RNA-seq,B. dendrobatidis,Amphibia,Atelopus zeteki,Panamanian golden frog,susceptible,Agalychnis callidryas vs. Atelopus zeteki,spleen,at clinical symptoms or experimental endpoint,,8732,2291,
+Ellison et al. 2015,RNA-seq,B. dendrobatidis,Amphibia,Agalychnis callidryas,red-eyed treefrog,non-susceptible,Agalychnis callidryas vs. Atelopus zeteki,spleen,at clinical symptoms or experimental endpoint,,8732,182,
+Ellison et al. 2015,RNA-seq,B. dendrobatidis,Amphibia,Atelopus glyphus,Pirri harlequin frog,susceptible,Craugastor fitzingeri vs. Atelopus glyphus,skin,at clinical symptoms or experimental endpoint,,8732,901,
+Ellison et al. 2015,RNA-seq,B. dendrobatidis,Amphibia,Craugastor fitzingeri,Fitzinger's robber frog,non-susceptible,Craugastor fitzingeri vs. Atelopus glyphus,skin,at clinical symptoms or experimental endpoint,,8732,1413,
+Ellison et al. 2015,RNA-seq,B. dendrobatidis,Amphibia,Atelopus glyphus,Pirri harlequin frog,susceptible,Craugastor fitzingeri vs. Atelopus glyphus,spleen,at clinical symptoms or experimental endpoint,,8732,452,
+Ellison et al. 2015,RNA-seq,B. dendrobatidis,Amphibia,Craugastor fitzingeri,Fitzinger's robber frog,non-susceptible,Craugastor fitzingeri vs. Atelopus glyphus,spleen,at clinical symptoms or experimental endpoint,,8732,2660,
+Ellison et al. 2015,RNA-seq,B. dendrobatidis,Amphibia,Atelopus glyphus,Pirri harlequin frog,susceptible,Agalychnis callidryas vs. Atelopus glyphus,skin,at clinical symptoms or experimental endpoint,,8732,901,
+Ellison et al. 2015,RNA-seq,B. dendrobatidis,Amphibia,Agalychnis callidryas,red-eyed treefrog,non-susceptible,Agalychnis callidryas vs. Atelopus glyphus,skin,at clinical symptoms or experimental endpoint,,8732,6,
+Ellison et al. 2015,RNA-seq,B. dendrobatidis,Amphibia,Atelopus glyphus,Pirri harlequin frog,susceptible,Agalychnis callidryas vs. Atelopus glyphus,spleen,at clinical symptoms or experimental endpoint,,8732,452,
+Ellison et al. 2015,RNA-seq,B. dendrobatidis,Amphibia,Agalychnis callidryas,red-eyed treefrog,non-susceptible,Agalychnis callidryas vs. Atelopus glyphus,spleen,at clinical symptoms or experimental endpoint,,8732,182,
+Eskew et al. 2018,RNA-seq,B. dendrobatidis,Amphibia,Rana catesbeiana,American bullfrog,non-susceptible,Rana catesbeiana vs. Rana sylvatica,skin,03 days,Carter Meadow,41646,6,
+Eskew et al. 2018,RNA-seq,B. dendrobatidis,Amphibia,Rana catesbeiana,American bullfrog,non-susceptible,Rana catesbeiana vs. Rana sylvatica,skin,07 days,Carter Meadow,41646,,
+Eskew et al. 2018,RNA-seq,B. dendrobatidis,Amphibia,Rana catesbeiana,American bullfrog,non-susceptible,Rana catesbeiana vs. Rana sylvatica,skin,10 days,Carter Meadow,41646,,
+Eskew et al. 2018,RNA-seq,B. dendrobatidis,Amphibia,Rana catesbeiana,American bullfrog,non-susceptible,Rana catesbeiana vs. Rana sylvatica,skin,03 days,Section Line,41646,54,
+Eskew et al. 2018,RNA-seq,B. dendrobatidis,Amphibia,Rana catesbeiana,American bullfrog,non-susceptible,Rana catesbeiana vs. Rana sylvatica,skin,07 days,Section Line,41646,7,
+Eskew et al. 2018,RNA-seq,B. dendrobatidis,Amphibia,Rana catesbeiana,American bullfrog,non-susceptible,Rana catesbeiana vs. Rana sylvatica,skin,10 days,Section Line,41646,0,
+Eskew et al. 2018,RNA-seq,B. dendrobatidis,Amphibia,Rana sylvatica,wood frog,susceptible,Rana catesbeiana vs. Rana sylvatica,skin,03 days,Carter Meadow,41646,82,
+Eskew et al. 2018,RNA-seq,B. dendrobatidis,Amphibia,Rana sylvatica,wood frog,susceptible,Rana catesbeiana vs. Rana sylvatica,skin,07 days,Carter Meadow,41646,220,
+Eskew et al. 2018,RNA-seq,B. dendrobatidis,Amphibia,Rana sylvatica,wood frog,susceptible,Rana catesbeiana vs. Rana sylvatica,skin,10 days,Carter Meadow,41646,285,
+Eskew et al. 2018,RNA-seq,B. dendrobatidis,Amphibia,Rana sylvatica,wood frog,susceptible,Rana catesbeiana vs. Rana sylvatica,skin,03 days,Section Line,41646,3938,
+Eskew et al. 2018,RNA-seq,B. dendrobatidis,Amphibia,Rana sylvatica,wood frog,susceptible,Rana catesbeiana vs. Rana sylvatica,skin,07 days,Section Line,41646,2915,
+Eskew et al. 2018,RNA-seq,B. dendrobatidis,Amphibia,Rana sylvatica,wood frog,susceptible,Rana catesbeiana vs. Rana sylvatica,skin,10 days,Section Line,41646,842,
+Lilley et al. 2019,RNA-seq,P. destructans,Mammalia,Myotis myotis,greater mouse-eared bat,non-susceptible,Myotis myotis vs. Myotis lucifugus,skin,opportunistic,,26840,1,
+Lilley et al. 2019,RNA-seq,P. destructans,Mammalia,Myotis lucifugus,little brown bat,susceptible,Myotis myotis vs. Myotis lucifugus,skin,opportunistic,,26840,1526,
+Poorten and Rosenblum 2016,microarray,B. dendrobatidis,Amphibia,Bufo marinus,cane toad,non-susceptible,Bufo marinus vs. Bufo boreas,skin,18 days,,33822,557,
+Poorten and Rosenblum 2016,microarray,B. dendrobatidis,Amphibia,Bufo marinus,cane toad,non-susceptible,Bufo marinus vs. Bufo boreas,liver,18 days,,33822,2,
+Poorten and Rosenblum 2016,microarray,B. dendrobatidis,Amphibia,Bufo marinus,cane toad,non-susceptible,Bufo marinus vs. Bufo boreas,spleen,18 days,,33822,0,
+Poorten and Rosenblum 2016,microarray,B. dendrobatidis,Amphibia,Bufo boreas,western toad,susceptible,Bufo marinus vs. Bufo boreas,skin,18 days,,33822,2163,
+Poorten and Rosenblum 2016,microarray,B. dendrobatidis,Amphibia,Bufo boreas,western toad,susceptible,Bufo marinus vs. Bufo boreas,liver,18 days,,33822,2898,
+Poorten and Rosenblum 2016,microarray,B. dendrobatidis,Amphibia,Bufo boreas,western toad,susceptible,Bufo marinus vs. Bufo boreas,spleen,18 days,,33822,3,
+Sutherland et al. 2014,microarray,L. salmonis,Actinopterygii,Oncorhynchus gorbuscha,pink salmon,non-susceptible,Oncorhynchus gorbuscha vs. Salmo salar,kidney,06 days,,6495,249,total counts derived from Figure S2B; gene-level analysis
+Sutherland et al. 2014,microarray,L. salmonis,Actinopterygii,Salmo salar,Atlantic salmon,susceptible,Oncorhynchus gorbuscha vs. Salmo salar,kidney,06 days,,6762,146,total counts derived from Figure S2B; gene-level analysis
+Sutherland et al. 2014,microarray,L. salmonis,Actinopterygii,Oncorhynchus gorbuscha,pink salmon,non-susceptible,Oncorhynchus gorbuscha vs. Oncorhynchus keta,kidney,06 days,,6495,249,total counts derived from Figure S2B; gene-level analysis
+Sutherland et al. 2014,microarray,L. salmonis,Actinopterygii,Oncorhynchus keta,chum salmon,susceptible,Oncorhynchus gorbuscha vs. Oncorhynchus keta,kidney,06 days,,6558,290,total counts derived from Figure S2B; gene-level analysis
+Sutherland et al. 2014,microarray,L. salmonis,Actinopterygii,Oncorhynchus gorbuscha,pink salmon,non-susceptible,Oncorhynchus gorbuscha vs. Salmo salar,skin,06 days,,16458,4,DE counts derived from Additional file 5; probe-level analysis
+Sutherland et al. 2014,microarray,L. salmonis,Actinopterygii,Salmo salar,Atlantic salmon,susceptible,Oncorhynchus gorbuscha vs. Salmo salar,skin,06 days,,18096,0,DE counts derived from Additional file 5; probe-level analysis
+Sutherland et al. 2014,microarray,L. salmonis,Actinopterygii,Oncorhynchus gorbuscha,pink salmon,non-susceptible,Oncorhynchus gorbuscha vs. Oncorhynchus keta,skin,06 days,,16458,4,DE counts derived from Additional file 5; probe-level analysis
+Sutherland et al. 2014,microarray,L. salmonis,Actinopterygii,Oncorhynchus keta,chum salmon,susceptible,Oncorhynchus gorbuscha vs. Oncorhynchus keta,skin,06 days,,16716,243,DE counts derived from Additional file 5; probe-level analysis

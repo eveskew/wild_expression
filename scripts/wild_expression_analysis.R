@@ -1,0 +1,260 @@
+
+
+# Load packages
+
+library(tidyverse)
+library(DiagrammeR)
+
+#==============================================================================
+
+
+# Import the raw differential expression data for the quantitative summary and
+# generate derived data columns
+
+d <- read_csv("data/quantitative_summary/wild_expression_data.csv")
+
+d <- d %>%
+  mutate(
+    prop_de = round(de/total_tested*100, 2),
+    prop_de_unrounded = de/total_tested*100,
+    log10_prop_de = log10(prop_de_unrounded),
+    log10_prop_de = ifelse(log10_prop_de < -2, -2.5, log10_prop_de),
+    log2_prop_de = log2(prop_de_unrounded),
+    log2_prop_de = ifelse(log2_prop_de <= -8, -8, log2_prop_de),
+    study_mod = paste0(
+      study, "\n",
+      "Assay: ", assay, "\n",
+      "Host class: ", host_class, "\n",
+      "Pathogen/parasite: ", pathogen
+    ),
+    study_mod_alt = paste0(
+      study, "\n",
+      "Assay: ", assay, ", ",
+      "Host class: ", host_class, ", ",
+      "Pathogen/parasite: ", pathogen
+    ),
+    study_mod_simple = paste0(
+      study, "\n",
+      assay, "\n",
+      host_class, "\n",
+      pathogen
+    ),
+    tissue_mod = paste0("Tissue assayed: ", tissue),
+    time_point_mod = paste0("Post-exposure time point: ", time_point),
+    second_line = ifelse(
+      is.na(pathogen_strain), 
+      tissue, 
+      paste(pathogen_strain, tissue, sep = " - ")
+    ),
+    second_line = paste(second_line, time_point, sep = " - "),
+    group_de = paste(comparison, second_line, sep = "\n")
+    %>%
+      as.factor()
+  )
+
+#==============================================================================
+
+
+# Subset down to create a table of disease-resistant vs. disease-susceptible
+# species comparisons
+
+comps <- d %>%
+  select(study, susceptibility, group_de, prop_de_unrounded) %>%
+  pivot_wider(names_from = susceptibility, values_from = prop_de_unrounded) %>%
+  mutate(resistant_less = `non-susceptible` < susceptible) %>%
+  filter(!is.na(`non-susceptible`))
+
+# How many disease-resistant vs. disease-susceptible comparisons are 
+# there total?
+
+n_total <- nrow(comps)
+n_total
+
+# In how many of the comparisons do the disease-resistant species have less
+# gene expression change than the disease-susceptible species?
+
+n_less <- sum(comps$resistant_less)
+n_less
+
+# Conduct a Chi-squared test
+
+chisq.test(c(n_less, n_total - n_less), p = c(0.5, 0.5))
+
+#==============================================================================
+
+
+# Figure 1 code
+
+# Generate labels that will appear along the bottom of the figure and add to
+# the larger data frame
+
+group.labels <- d %>%
+  arrange(study_mod_simple, group_de) %>%
+  filter(susceptibility == "susceptible") %>%
+  group_by(study) %>%
+  mutate(
+    first_line = paste0(substr(study, 1, 2), as.character(row_number()))
+  ) %>%
+  ungroup() %>%
+  mutate(
+    time_point_short = str_replace_all(time_point, " ", ""),
+    time_point_short = substr(time_point_short, 1, 3),
+    time_point_short = 
+      ifelse(!str_detect(time_point_short, "d"), "op", time_point_short),
+    tissue_short = substr(tissue, 1, 2),
+    bottom_label = 
+      paste0(first_line, "\n", tissue_short, "\n", time_point_short)
+  ) %>%
+  select(group_de, bottom_label)
+
+d <- left_join(d, group.labels, by = "group_de")
+
+# Generate the segment lengths that will connect disease-resistant and 
+# disease-susceptible species comparisons
+
+segment.limits <- d %>%
+  group_by(bottom_label) %>%
+  summarize(
+    min_measure = min(prop_de),
+    max_measure = max(prop_de)
+  )
+
+# Plot and save Figure 1
+
+d %>%
+  left_join(., segment.limits, by = "bottom_label") %>%
+  ggplot(aes(x = bottom_label, y = prop_de, color = susceptibility)) +
+  geom_segment(
+    aes(x = bottom_label, xend = bottom_label, 
+        y = min_measure, yend = max_measure),
+    color = "darkgrey", size = 2
+  ) +
+  geom_point(size = 8) +
+  scale_color_manual(values = alpha(c("dodgerblue", "firebrick2"), 0.7)) +
+  ylab("Proportion of genes/contigs/probes differentially expressed") +
+  theme_minimal() +
+  theme(
+    axis.title.x = element_blank(),
+    panel.grid.minor.y = element_blank(),
+    panel.grid.major.x = element_blank(),
+    strip.text.x = element_text(angle = 0, size = 22),
+    axis.text = element_text(size = 24),
+    axis.title.y = element_text(size = 34),
+    legend.text = element_text(size = 34),
+    legend.position = "bottom",
+    legend.title = element_blank()
+  ) +
+  facet_wrap(~study_mod_simple, scales = "free_x", nrow = 1)
+
+ggsave("outputs/fig1.jpeg", width = 30, height = 15)
+
+# Output reference table
+
+d %>%
+  group_by(bottom_label) %>%
+  distinct(
+    study, assay, pathogen, host_class, comparison, 
+    tissue, time_point, pathogen_strain) %>%
+  select(bottom_label, everything()) %>%
+  ungroup() %>%
+  mutate(bottom_label = substr(bottom_label, 1, 3)) %>%
+  arrange(bottom_label) %>%
+  rename(
+    `Comparison Label` = bottom_label,
+    `Study` = study,
+    `Assay` = assay,
+    `Pathogen` = pathogen,
+    `Host Class` = host_class,
+    `Host Comparison` = comparison,
+    `Tissue Sampled` = tissue,
+    `Sampling Time Point` = time_point,
+    `Pathogen Strain` = pathogen_strain
+  ) %>%
+  write_csv(., "outputs/fig1_supplementary_table.csv")
+
+# Alternative version of Figure 1 (horizontal layout)
+
+d %>%
+  left_join(., segment.limits, by = "bottom_label") %>%
+  ggplot(aes(
+    x = prop_de,
+    y = reorder(bottom_label, desc(bottom_label)), 
+    color = susceptibility)) +
+  geom_segment(
+    aes(y = bottom_label, yend = bottom_label, 
+        x = min_measure, xend = max_measure),
+    color = "darkgrey", size = 2
+  ) +
+  geom_point(size = 8) +
+  scale_color_manual(values = alpha(c("dodgerblue", "firebrick2"), 0.7)) +
+  xlab("Proportion of genes/contigs differentially expressed") +
+  theme_minimal() +
+  theme(
+    legend.position = "none",
+    axis.title.y = element_blank(),
+    panel.grid.minor.x = element_blank(),
+    panel.grid.major.y = element_blank(),
+    strip.text.y = element_text(angle = 0, size = 18),
+    axis.text = element_text(size = 20),
+    axis.title.x = element_text(size = 24)
+  ) +
+  facet_wrap(~study_mod_simple, scales = "free_y", ncol = 1, strip.position = "right")
+
+# ggsave("outputs/fig1alt.jpeg", width = 12, height = 14)
+
+#==============================================================================
+
+
+# Generate Figure 2 (have to manually export from RStudio)
+
+grViz("data/figures/flowchart.dot")
+
+#==============================================================================
+
+
+# Old code for generating heatmaps (not used)
+
+d %>%
+  ggplot(aes(x = susceptibility, y = forcats::fct_rev(group_de))) +
+  geom_tile(aes(fill = log2_prop_de)) +
+  geom_text(aes(label = prop_de, fontface = "bold")) +
+  xlab("Disease Susceptibility of Host") +
+  scale_x_discrete(position = "top") +
+  scale_fill_gradient(
+    low = "white", high = "firebrick3", na.value = "gainsboro",
+    limits = c(-8, 7)
+  ) +
+  theme_minimal() +
+  theme(
+    axis.title.x = element_text(size = 22),
+    axis.text.x = element_text(size = 14, face = "bold"),
+    axis.title.y = element_blank(),
+    strip.text.x = element_text(size = 17),
+    legend.position = "none"
+  ) +
+  facet_wrap(~study_mod, scales = "free_y", ncol = 3)
+
+# ggsave("outputs/fig1.jpeg", width = 22, height = 12)
+
+d %>%
+  ggplot(aes(x = susceptibility, y = forcats::fct_rev(group_de))) +
+  geom_tile(aes(fill = log2_prop_de)) +
+  geom_text(aes(label = prop_de, fontface = "bold")) +
+  xlab("Disease Susceptibility of Host") +
+  scale_x_discrete(position = "top") +
+  scale_fill_gradient(
+    low = "white", high = "firebrick3", na.value = "gainsboro",
+    limits = c(-8, 7)
+  ) +
+  theme_minimal() +
+  theme(
+    axis.title.x = element_text(size = 22),
+    axis.text.x = element_text(size = 20, face = "bold"),
+    axis.title.y = element_blank(),
+    strip.text.x = element_text(size = 17),
+    legend.position = "none",
+    axis.text.y = element_blank()
+  ) +
+  facet_wrap(~study_mod, scales = "free_y", ncol = 3)
+
+# ggsave("outputs/fig1alt.jpeg", width = 14, height = 12)

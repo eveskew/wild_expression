@@ -1,0 +1,31 @@
+
+digraph flowchart {
+  
+  graph [fontsize = 20]
+  
+  node [shape = box, fontname = Calibri, style = filled, fillcolor = linen, width = 6, penwidth = 0]
+  
+  e1 [label = <<U><B>Evidence regarding disease outcome</B></U><BR></BR><BR></BR><B>Minimal negative disease-related outcomes</B>     following pathogen<BR></BR>exposure (primarily lack of mortality but also<BR></BR>limited sub-lethal effects, such as weight loss)>]
+  
+  e2 [label = <<U><B>Evidence regarding infection and pathogen load</B></U><BR></BR><BR></BR>Following pathogen exposure, the focal host species<BR></BR><B>remains uninfected, limits pathogen load, or reduces</B><BR></BR><B>pathogen load over time</B>   , potentially clearing infection>]
+  
+  e3 [label = <<U><B>Evidence regarding infection and pathogen load</B></U><BR></BR><BR></BR>Following pathogen exposure, the focal host species<BR></BR><B>maintains infection</B>   at loads that lead to<BR></BR>disease development in more susceptible host species>]
+  
+  e4 [label = <<U><B>Evidence regarding gene expression response of host</B></U><BR></BR><BR></BR>Compared to unexposed controls of the same species, exposed hosts<BR></BR>show <B>substantial differential gene expression</B>>]
+  
+  e5 [label = <<U><B>Evidence regarding gene expression response of host</B></U><BR></BR><BR></BR>Compared to unexposed controls of the same species, exposed hosts<BR></BR>show <B>limited differential gene expression</B>    (in some cases none)>]
+  
+  node [fillcolor = darkseagreen2]
+  
+  c1 [label = <<U><B>Conclusion regarding disease susceptbility of host</B></U><BR></BR><BR></BR>The focal host species is <B>non-susceptible</B>>]
+  
+  c2 [label = <<U><B>Conclusion regarding disease defense strategy of host</B></U><BR></BR><BR></BR>The focal host species demonstrates pathogen   <B>resistance</B>>]
+  
+  c3 [label = <<U><B>Conclusion regarding disease defense strategy of host</B></U><BR></BR><BR></BR>The focal host species demonstrates pathogen   <B>tolerance</B>>]
+  
+  c4 [label = <<U><B>Conclusion regarding gene expression strategy of host</B></U><BR></BR><BR></BR>The focal host species defends against disease using an  <B>"active"</B><BR></BR><B>transcriptomic response</B>    that may distinguish it from<BR></BR>more susceptible host species>]
+  
+  c5 [label = <<U><B>Conclusion regarding gene expression strategy of host</B></U><BR></BR><BR></BR>The focal host species may defend against disease using  <B>constituitively</B><BR></BR><B>expressed genes or by limiting gene dysregulation</B>     induced in<BR></BR>more susceptible host species upon exposure>]
+  
+  e1 -> c1; c1 -> e2; c1 -> e3; e2 -> c2; e3 -> c3; c2 -> e4; c2 -> e5; c3 -> e4; c3 -> e5; e4 -> c4; e5 -> c5
+}
