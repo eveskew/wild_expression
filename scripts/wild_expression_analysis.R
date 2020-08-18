@@ -152,6 +152,7 @@ d %>%
   facet_wrap(~study_mod_simple, scales = "free_x", nrow = 1)
 
 ggsave("outputs/fig1.jpeg", width = 30, height = 15)
+ggsave("outputs/fig1.pdf", width = 30, height = 15)
 
 # Output reference table
 
@@ -213,6 +214,13 @@ d %>%
 # Generate Figure 2 (have to manually export from RStudio)
 
 grViz("data/figures/flowchart.dot")
+
+# Save as a pdf automatically
+
+grViz("data/figures/flowchart.dot") %>%
+  DiagrammeRsvg::export_svg() %>%
+  charToRaw() %>%
+  rsvg::rsvg_pdf(file = "outputs/fig2.pdf", width = 1400, height = 900)
 
 #==============================================================================
 
