@@ -17,7 +17,7 @@ digraph flowchart {
   
   node [fillcolor = darkseagreen2]
   
-  c1 [label = <<U><B>Conclusion regarding disease susceptbility of host</B></U><BR></BR><BR></BR>The focal host species is <B>non-susceptible</B>>]
+  c1 [label = <<U><B>Conclusion regarding disease susceptibility of host</B></U><BR></BR><BR></BR>The focal host species is <B>non-susceptible</B>>]
   
   c2 [label = <<U><B>Conclusion regarding disease defense strategy of host</B></U><BR></BR><BR></BR>The focal host species demonstrates pathogen   <B>resistance</B>>]
   

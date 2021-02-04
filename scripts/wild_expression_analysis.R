@@ -11,12 +11,14 @@ library(DiagrammeR)
 # Import the raw differential expression data for the quantitative summary and
 # generate derived data columns
 
-d <- read_csv("data/quantitative_summary/wild_expression_data.csv")
-
-d <- d %>%
+d <- read_csv("data/quantitative_summary/wild_expression_data.csv") %>%
   mutate(
-    prop_de = round(de/total_tested*100, 2),
-    prop_de_unrounded = de/total_tested*100,
+    total_tested = as.integer(total_tested),
+    de_total_tested = as.integer(de_total_tested),
+    total_annotated = as.integer(total_annotated),
+    de_total_annotated = as.integer(de_total_annotated),
+    prop_de = round(de_total_tested/total_tested*100, 2),
+    prop_de_unrounded = de_total_tested/total_tested*100,
     log10_prop_de = log10(prop_de_unrounded),
     log10_prop_de = ifelse(log10_prop_de < -2, -2.5, log10_prop_de),
     log2_prop_de = log2(prop_de_unrounded),
@@ -39,6 +41,7 @@ d <- d %>%
       host_class, "\n",
       pathogen
     ),
+    study = as.factor(study),
     tissue_mod = paste0("Tissue assayed: ", tissue),
     time_point_mod = paste0("Post-exposure time point: ", time_point),
     second_line = ifelse(
@@ -49,36 +52,9 @@ d <- d %>%
     second_line = paste(second_line, time_point, sep = " - "),
     group_de = paste(comparison, second_line, sep = "\n")
     %>%
-      as.factor()
+      as.factor(),
+    susceptibility_binary = ifelse(susceptibility == "susceptible", 1, 0)
   )
-
-#==============================================================================
-
-
-# Subset down to create a table of disease-resistant vs. disease-susceptible
-# species comparisons
-
-comps <- d %>%
-  select(study, susceptibility, group_de, prop_de_unrounded) %>%
-  pivot_wider(names_from = susceptibility, values_from = prop_de_unrounded) %>%
-  mutate(resistant_less = `non-susceptible` < susceptible) %>%
-  filter(!is.na(`non-susceptible`))
-
-# How many disease-resistant vs. disease-susceptible comparisons are 
-# there total?
-
-n_total <- nrow(comps)
-n_total
-
-# In how many of the comparisons do the disease-resistant species have less
-# gene expression change than the disease-susceptible species?
-
-n_less <- sum(comps$resistant_less)
-n_less
-
-# Conduct a Chi-squared test
-
-chisq.test(c(n_less, n_total - n_less), p = c(0.5, 0.5))
 
 #==============================================================================
 
