@@ -4,6 +4,7 @@
 
 library(tidyverse)
 library(DiagrammeR)
+library(ggtext)
 
 #==============================================================================
 
@@ -17,8 +18,8 @@ d <- read_csv("data/quantitative_summary/wild_expression_data.csv") %>%
     de_total_tested = as.integer(de_total_tested),
     total_annotated = as.integer(total_annotated),
     de_total_annotated = as.integer(de_total_annotated),
-    prop_de = round(de_total_tested/total_tested*100, 2),
-    prop_de_unrounded = de_total_tested/total_tested*100,
+    prop_de = round(de_total_tested/total_tested, 2),
+    prop_de_unrounded = de_total_tested/total_tested,
     log10_prop_de = log10(prop_de_unrounded),
     log10_prop_de = ifelse(log10_prop_de < -2, -2.5, log10_prop_de),
     log2_prop_de = log2(prop_de_unrounded),
@@ -36,10 +37,10 @@ d <- read_csv("data/quantitative_summary/wild_expression_data.csv") %>%
       "Pathogen/parasite: ", pathogen
     ),
     study_mod_simple = paste0(
-      study, "\n",
-      assay, "\n",
-      host_class, "\n",
-      pathogen
+      study, "<br>",
+      assay, "<br>",
+      host_class, "<br>",
+      "*", pathogen, "*"
     ),
     study = as.factor(study),
     tissue_mod = paste0("Tissue assayed: ", tissue),
@@ -108,7 +109,8 @@ d %>%
     color = "darkgrey", size = 2
   ) +
   geom_point(size = 8) +
-  scale_color_manual(values = alpha(c("dodgerblue", "firebrick2"), 0.7)) +
+  ylim(0, 0.6) +
+  scale_color_manual(values = alpha(c("dodgerblue", "firebrick2"), 0.9)) +
   scale_shape_manual(values = c(17, 15, 16, 18)) +
   ylab("Proportion of genes/contigs/probes differentially expressed") +
   theme_minimal() +
@@ -125,7 +127,8 @@ d %>%
     legend.title = element_blank()
   ) +
   guides(color = guide_legend(order = 1)) +
-  facet_wrap(~study_mod_simple, scales = "free_x", nrow = 1)
+  facet_wrap(~study_mod_simple, scales = "free_x", nrow = 1) +
+  theme(strip.text.x = element_markdown())
 
 ggsave("outputs/fig1.jpeg", width = 30, height = 15)
 ggsave("outputs/fig1.pdf", width = 30, height = 15)
@@ -168,7 +171,7 @@ d %>%
     color = "darkgrey", size = 2
   ) +
   geom_point(size = 8) +
-  scale_color_manual(values = alpha(c("dodgerblue", "firebrick2"), 0.7)) +
+  scale_color_manual(values = alpha(c("dodgerblue", "firebrick2"), 0.9)) +
   xlab("Proportion of genes/contigs differentially expressed") +
   theme_minimal() +
   theme(

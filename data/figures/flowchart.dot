@@ -23,7 +23,7 @@ digraph flowchart {
   
   c3 [label = <<U><B>Conclusion regarding disease defense strategy of host</B></U><BR></BR><BR></BR>The focal host species demonstrates pathogen   <B>tolerance</B>>]
   
-  c4 [label = <<U><B>Conclusion regarding gene expression strategy of host</B></U><BR></BR><BR></BR>The focal host species defends against disease using an  <B>"active"</B><BR></BR><B>transcriptomic response</B><B>   </B>that may distinguish it from<BR></BR>more susceptible host species>]
+  c4 [label = <<U><B>Conclusion regarding gene expression strategy of host</B></U><BR></BR><BR></BR>The focal host species defends against disease using an  <B>induced</B><BR></BR><B>transcriptomic response</B><B>   </B>that may distinguish it from<BR></BR>more susceptible host species>]
   
   c5 [label = <<U><B>Conclusion regarding gene expression strategy of host</B></U><BR></BR><BR></BR>The focal host species may defend against disease using  <B>constitutively</B><BR></BR><B>expressed genes or by limiting gene dysregulation</B><B>    </B>induced in<BR></BR>more susceptible host species upon exposure>]
   
