@@ -94,15 +94,15 @@ d <- left_join(d, group.labels, by = "group_de")
 segment.limits <- d %>%
   group_by(bottom_label) %>%
   summarize(
-    min_measure = min(prop_de),
-    max_measure = max(prop_de)
+    min_measure = min(prop_de_unrounded),
+    max_measure = max(prop_de_unrounded)
   )
 
 # Plot and save Figure 1
 
 d %>%
   left_join(., segment.limits, by = "bottom_label") %>%
-  ggplot(aes(x = bottom_label, y = prop_de, color = susceptibility, shape = tissue)) +
+  ggplot(aes(x = bottom_label, y = prop_de_unrounded, color = susceptibility, shape = tissue)) +
   geom_segment(
     aes(x = bottom_label, xend = bottom_label, 
         y = min_measure, yend = max_measure),
@@ -111,7 +111,7 @@ d %>%
   geom_point(size = 8) +
   ylim(0, 0.6) +
   scale_color_manual(values = alpha(c("dodgerblue", "firebrick2"), 0.9)) +
-  scale_shape_manual(values = c(17, 15, 16, 18)) +
+  scale_shape_manual(values = c(17, 15, 16, 18, 25)) +
   ylab("Proportion of genes/contigs/probes differentially expressed") +
   theme_minimal() +
   theme(
@@ -120,8 +120,8 @@ d %>%
     panel.grid.major.x = element_blank(),
     strip.text.x = element_text(angle = 0, size = 22),
     axis.text = element_text(size = 24),
-    axis.title.y = element_text(size = 34),
-    legend.text = element_text(size = 34),
+    axis.title.y = element_text(size = 36),
+    legend.text = element_text(size = 36),
     legend.position = "bottom",
     legend.box = "vertical",
     legend.title = element_blank()
@@ -183,7 +183,8 @@ d %>%
     axis.text = element_text(size = 20),
     axis.title.x = element_text(size = 24)
   ) +
-  facet_wrap(~study_mod_simple, scales = "free_y", ncol = 1, strip.position = "right")
+  facet_wrap(~study_mod_simple, scales = "free_y", ncol = 1, strip.position = "right") +
+  theme(strip.text.y = element_markdown())
 
 # ggsave("outputs/fig1alt.jpeg", width = 12, height = 14)
 
