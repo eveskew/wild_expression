@@ -4,7 +4,6 @@
 
 library(tidyverse)
 library(rethinking)
-library(ggforce)
 
 #==============================================================================
 

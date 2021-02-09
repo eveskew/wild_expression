@@ -3,8 +3,11 @@
 # Load packages
 
 library(tidyverse)
-library(DiagrammeR)
+library(ggforce)
 library(ggtext)
+library(dotwhisker)
+library(DiagrammeR)
+library(viridis)
 
 #==============================================================================
 
@@ -60,7 +63,7 @@ d <- read_csv("data/quantitative_summary/wild_expression_data.csv") %>%
 #==============================================================================
 
 
-# Figure 1 code
+# Figure 1a code
 
 # Generate labels that will appear along the bottom of the figure and add to
 # the larger data frame
@@ -98,11 +101,16 @@ segment.limits <- d %>%
     max_measure = max(prop_de_unrounded)
   )
 
-# Plot and save Figure 1
+# Plot and save Figure 1a
 
-d %>%
+fig1a <- d %>%
   left_join(., segment.limits, by = "bottom_label") %>%
-  ggplot(aes(x = bottom_label, y = prop_de_unrounded, color = susceptibility, shape = tissue)) +
+  ggplot(
+    aes(x = bottom_label, y = prop_de_unrounded, 
+        color = susceptibility, 
+        fill = susceptibility,
+        shape = tissue)
+  ) +
   geom_segment(
     aes(x = bottom_label, xend = bottom_label, 
         y = min_measure, yend = max_measure),
@@ -111,6 +119,7 @@ d %>%
   geom_point(size = 8) +
   ylim(0, 0.6) +
   scale_color_manual(values = alpha(c("dodgerblue", "firebrick2"), 0.9)) +
+  scale_fill_manual(values = alpha(c("dodgerblue", "firebrick2"), 0.9)) +
   scale_shape_manual(values = c(17, 15, 16, 18, 25)) +
   ylab("Proportion of genes/contigs/probes differentially expressed") +
   theme_minimal() +
@@ -128,10 +137,16 @@ d %>%
   ) +
   guides(color = guide_legend(order = 1)) +
   facet_wrap(~study_mod_simple, scales = "free_x", nrow = 1) +
-  theme(strip.text.x = element_markdown())
+  theme(strip.text.x = element_markdown()) +
+  guides(
+    fill = FALSE,
+    shape = guide_legend(override.aes = list(fill = "black")) 
+  )
 
-ggsave("outputs/fig1.jpeg", width = 30, height = 15)
-ggsave("outputs/fig1.pdf", width = 30, height = 15)
+fig1a
+
+ggsave("outputs/fig1a.jpeg", width = 30, height = 15)
+ggsave("outputs/fig1a.pdf", width = 30, height = 15)
 
 # Output reference table
 
@@ -196,13 +211,84 @@ d %>%
 # Load m.all model
 
 m.all <- readRDS("data/saved_models/m.all.RDS")
+m.all.stanfit <- m.all@stanfit
 m.all.out <- extract(m.all@stanfit)
 
-plot(m.all)
+# Generate parameter traceplot
 
+traceplot <- rstan::traceplot(m.all.stanfit, ncol = 4)
+
+levels(traceplot$data$parameter) <- c(
+  "Intercept", "Species Type",
+  "Bracamonte et al. 2019", "Davy et al. 2017", "Ellison et al. 2015",
+  "Eskew et al. 2018", "Fuess et al. 2017", "Poorten and Rosenblum 2016",
+  "Sutherland et al. 2014",
+  "σ (Study)"
+)
+
+traceplot + 
+  scale_color_viridis(discrete = TRUE, option = "plasma", end = 0.85) +
+  ggtitle("Parameter trace plots for hierarchical Bayesian model of differential gene expression (all data)") +
+  theme(
+    text = element_text(size = 14, color = "black"),
+    plot.title = element_text(size = 18),
+    strip.text.x = element_text(size = 14, face = "bold"),
+    legend.position = "none"
+  )
+
+ggsave("outputs/figS2.jpeg", width = 15, height = 10)
+
+# Generate parameter dotchart
+
+m.all.summary <- as.data.frame(m.all.out) %>%
+  select(-11) %>%
+  pivot_longer(cols = 1:10, names_to = "parameter") %>%
+  group_by(parameter) %>%
+  summarize(
+    mean = mean(value),
+    median = median(value),
+    lower = HPDI(value, prob = 0.95)[1],
+    upper = HPDI(value, prob = 0.95)[2]
+  )
+
+m.all.summary
 precis(m.all, prob = 0.95, depth = 2)
 
-plot(precis(m.all, prob = 0.95, depth = 2))
+m.all.summary %>%
+  rename(
+    term = parameter,
+    estimate = mean, 
+    conf.low = lower, 
+    conf.high = upper
+  ) %>%
+  relabel_predictors(
+    a = "Intercept",
+    bS = "Species Type",
+    sigma_study = "σ (Study)",
+    a_study.1 = "Bracamonte et al. 2019", 
+    a_study.2 = "Davy et al. 2017", 
+    a_study.3 = "Ellison et al. 2015",
+    a_study.4 = "Eskew et al. 2018", 
+    a_study.5 = "Fuess et al. 2017", 
+    a_study.6 = "Poorten and Rosenblum 2016",
+    a_study.7 = "Sutherland et al. 2014"
+  ) %>%
+  dw_plot(
+    dot_args = list(size = 3, color = "darkgreen"),
+    whisker_args = list(color = "forestgreen")
+  )+
+  xlab("Parameter Estimate") +
+  xlim(-7.5, 7.5) +
+  theme_minimal() + 
+  theme(
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor.x = element_blank(),
+    text = element_text(size = 14, color = "black"),
+    legend.position = "none"
+  ) +
+  geom_vline(xintercept = 0, colour = "black", linetype = 2)
+
+ggsave("outputs/figS3.jpeg", width = 6, height = 4)
 
 preds <- data.frame(
   species_type = c(
@@ -217,8 +303,8 @@ preds.summary <- preds %>%
   summarize(
     median = median(probs),
     mean = mean(probs),
-    lower = HPDI(probs, prob = 0.97)[1],
-    upper = HPDI(probs, prob = 0.97)[2]
+    lower = HPDI(probs, prob = 0.95)[1],
+    upper = HPDI(probs, prob = 0.95)[2]
   )
 
 fig1b <- preds %>%
@@ -287,19 +373,94 @@ fig1b <- preds %>%
 
 fig1b
 
-ggsave("outputs/option_b.jpeg", width = 20, height = 10)
+ggsave("outputs/fig1b.jpeg", width = 20, height = 10)
+
+plot_grid(fig1a, fig1b, labels = c("A", "B"), nrow = 2)
+
+ggsave("outputs/test.jpeg", width = 30, height = 30)
 
 
 # Load m.anno model
 
 m.anno <- readRDS("data/saved_models/m.anno.RDS")
+m.anno.stanfit <- m.anno@stanfit
 m.anno.out <- extract(m.anno@stanfit)
 
-plot(m.anno)
+# Generate parameter traceplot
 
+traceplot <- rstan::traceplot(m.anno.stanfit, ncol = 4)
+
+levels(traceplot$data$parameter) <- c(
+  "Global Intercept", "Species Type",
+  "Bracamonte et al. 2019", "Davy et al. 2017", "Ellison et al. 2015",
+  "Eskew et al. 2018", "Fuess et al. 2017", "Poorten and Rosenblum 2016",
+  "Sutherland et al. 2014",
+  "σ (Study)"
+)
+
+traceplot + 
+  scale_color_viridis(discrete = TRUE, option = "plasma", end = 0.85) +
+  ggtitle("Parameter trace plots for hierarchical Bayesian model of differential gene expression (only annotated data)") +
+  theme(
+    text = element_text(size = 14, color = "black"),
+    plot.title = element_text(size = 18),
+    strip.text.x = element_text(size = 14, face = "bold"),
+    legend.position = "none"
+  )
+
+ggsave("outputs/figS4.jpeg", width = 15, height = 10)
+
+# Generate parameter dotchart
+
+m.anno.summary <- as.data.frame(m.anno.out) %>%
+  select(-11) %>%
+  pivot_longer(cols = 1:10, names_to = "parameter") %>%
+  group_by(parameter) %>%
+  summarize(
+    mean = mean(value),
+    median = median(value),
+    lower = HPDI(value, prob = 0.95)[1],
+    upper = HPDI(value, prob = 0.95)[2]
+  )
+
+m.anno.summary
 precis(m.anno, prob = 0.95, depth = 2)
 
-plot(precis(m.anno, prob = 0.95, depth = 2))
+m.anno.summary %>%
+  rename(
+    term = parameter,
+    estimate = mean, 
+    conf.low = lower, 
+    conf.high = upper
+  ) %>%
+  relabel_predictors(
+    a = "Intercept",
+    bS = "Species Type",
+    sigma_study = "σ (Study)",
+    a_study.1 = "Bracamonte et al. 2019", 
+    a_study.2 = "Davy et al. 2017", 
+    a_study.3 = "Ellison et al. 2015",
+    a_study.4 = "Eskew et al. 2018", 
+    a_study.5 = "Fuess et al. 2017", 
+    a_study.6 = "Poorten and Rosenblum 2016",
+    a_study.7 = "Sutherland et al. 2014"
+  ) %>%
+  dw_plot(
+    dot_args = list(size = 3, color = "darkgreen"),
+    whisker_args = list(color = "forestgreen")
+  )+
+  xlab("Parameter Estimate") +
+  xlim(-7.5, 7.5) +
+  theme_minimal() + 
+  theme(
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor.x = element_blank(),
+    text = element_text(size = 14, color = "black"),
+    legend.position = "none"
+  ) +
+  geom_vline(xintercept = 0, colour = "black", linetype = 2)
+
+ggsave("outputs/figS5.jpeg", width = 6, height = 4)
 
 #==============================================================================
 
