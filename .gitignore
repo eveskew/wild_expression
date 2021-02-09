@@ -3,4 +3,5 @@
 *.Rproj.user
 
 documents/*
+scripts/scraps.R
 .Rproj.user

@@ -191,6 +191,119 @@ d %>%
 #==============================================================================
 
 
+# Visualize modeling results
+
+# Load m.all model
+
+m.all <- readRDS("data/saved_models/m.all.RDS")
+m.all.out <- extract(m.all@stanfit)
+
+plot(m.all)
+
+precis(m.all, prob = 0.95, depth = 2)
+
+plot(precis(m.all, prob = 0.95, depth = 2))
+
+preds <- data.frame(
+  species_type = c(
+    rep("non-susceptible", length(m.all.out$a)), 
+    rep("susceptible", length(m.all.out$a))
+  ),
+  probs = c(logistic(m.all.out$a), logistic(m.all.out$a + m.all.out$bS))
+)
+
+preds.summary <- preds %>%
+  group_by(species_type) %>%
+  summarize(
+    median = median(probs),
+    mean = mean(probs),
+    lower = HPDI(probs, prob = 0.97)[1],
+    upper = HPDI(probs, prob = 0.97)[2]
+  )
+
+fig1b <- preds %>%
+  ggplot(aes(x = species_type, y = probs, group = species_type)) +
+  ylab("Implied probability of differential gene\nexpression given pathogen exposure") +
+  xlab("Host species type") +
+  ylim(0, 0.4) +
+  #geom_jitter(aes(color = species_type), alpha = 0.2) +
+  geom_sina(aes(color = species_type), alpha = 0.05) +
+  geom_pointrange(
+    data = preds.summary,
+    aes(y = median, ymin = lower, ymax = upper, group = species_type),
+    size = 1
+  ) +
+  scale_color_manual(values = alpha(c("dodgerblue", "firebrick2"), 0.7)) +
+  theme_minimal() +
+  theme(
+    panel.grid.minor.y = element_blank(),
+    panel.grid.major.x = element_blank(),
+    legend.position = "none",
+    axis.text = element_text(size = 14),
+    axis.title = element_text(size = 18),
+  )
+
+fig1b
+
+fig1b <- preds %>%
+  ggplot(aes(x = probs, group = species_type)) +
+  xlab("Implied probability of differential gene expression given pathogen exposure") +
+  ylab("Posterior density") +
+  xlim(0, 0.15) +
+  ylim(0, 125) +
+  geom_density(aes(fill = species_type, color = species_type), size = 2) +
+  scale_color_manual(
+    values = alpha(c("dodgerblue", "firebrick2"), 0.9),
+    name = "Host species type"
+  ) +
+  scale_fill_manual(
+    values = alpha(c("dodgerblue", "firebrick2"), 0.2),
+    name = "Host species type"
+  ) +
+  theme_minimal() +
+  theme(
+    panel.grid.minor.x = element_blank(),
+    panel.grid.minor.y = element_blank(),
+    axis.text = element_text(size = 32),
+    axis.title = element_text(size = 36),
+    legend.title = element_blank(),
+    legend.position = "none",
+    legend.text = element_text(size = 36)
+  ) +
+  annotate(
+    geom = "text",
+    label = "non-susceptible host",
+    x = 0.03, y = 80,
+    size = 14,
+    color = alpha("dodgerblue", 0.9)
+  ) +
+  annotate(
+    geom = "text",
+    label = "susceptible host",
+    x = 0.04, y = 27,
+    size = 14,
+    color = alpha("firebrick2", 0.9)
+  )
+
+fig1b
+
+ggsave("outputs/option_b.jpeg", width = 20, height = 10)
+
+
+# Load m.anno model
+
+m.anno <- readRDS("data/saved_models/m.anno.RDS")
+m.anno.out <- extract(m.anno@stanfit)
+
+plot(m.anno)
+
+precis(m.anno, prob = 0.95, depth = 2)
+
+plot(precis(m.anno, prob = 0.95, depth = 2))
+
+#==============================================================================
+
+
 # Generate Figure 2 (have to manually export from RStudio)
 
 grViz("data/figures/flowchart.dot")
