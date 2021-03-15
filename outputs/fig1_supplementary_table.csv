@@ -16,7 +16,10 @@ Es3,Eskew et al. 2018,RNA-seq,B. dendrobatidis,Amphibia,Rana catesbeiana vs. Ran
 Es4,Eskew et al. 2018,RNA-seq,B. dendrobatidis,Amphibia,Rana catesbeiana vs. Rana sylvatica,skin,03 days,Section Line
 Es5,Eskew et al. 2018,RNA-seq,B. dendrobatidis,Amphibia,Rana catesbeiana vs. Rana sylvatica,skin,07 days,Section Line
 Es6,Eskew et al. 2018,RNA-seq,B. dendrobatidis,Amphibia,Rana catesbeiana vs. Rana sylvatica,skin,10 days,Section Line
-Li1,Lilley et al. 2019,RNA-seq,P. destructans,Mammalia,Myotis myotis vs. Myotis lucifugus,skin,opportunistic,NA
+Fu1,Fuess et al. 2017,RNA-seq,E. coli,Anthozoa,Porites astreoides vs. Orbicella faveolata,tissue/skeleton,04 hours,NA
+Fu2,Fuess et al. 2017,RNA-seq,E. coli,Anthozoa,Porites astreoides vs. Pseudodiploria strigosa,tissue/skeleton,04 hours,NA
+Fu3,Fuess et al. 2017,RNA-seq,E. coli,Anthozoa,Porites porites vs. Orbicella faveolata,tissue/skeleton,04 hours,NA
+Fu4,Fuess et al. 2017,RNA-seq,E. coli,Anthozoa,Porites porites vs. Pseudodiploria strigosa,tissue/skeleton,04 hours,NA
 Po1,Poorten and Rosenblum 2016,microarray,B. dendrobatidis,Amphibia,Bufo marinus vs. Bufo boreas,liver,18 days,NA
 Po2,Poorten and Rosenblum 2016,microarray,B. dendrobatidis,Amphibia,Bufo marinus vs. Bufo boreas,skin,18 days,NA
 Po3,Poorten and Rosenblum 2016,microarray,B. dendrobatidis,Amphibia,Bufo marinus vs. Bufo boreas,spleen,18 days,NA

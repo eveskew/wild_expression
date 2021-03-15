@@ -3,6 +3,7 @@
 # Load packages
 
 library(tidyverse)
+library(cowplot)
 library(ggforce)
 library(ggtext)
 library(dotwhisker)
@@ -129,8 +130,8 @@ fig1a <- d %>%
     panel.grid.major.x = element_blank(),
     strip.text.x = element_text(angle = 0, size = 22),
     axis.text = element_text(size = 24),
-    axis.title.y = element_text(size = 36),
-    legend.text = element_text(size = 36),
+    axis.title.y = element_text(size = 35),
+    legend.text = element_text(size = 35),
     legend.position = "bottom",
     legend.box = "vertical",
     legend.title = element_blank()
@@ -145,7 +146,6 @@ fig1a <- d %>%
 
 fig1a
 
-ggsave("outputs/fig1a.jpeg", width = 30, height = 15)
 ggsave("outputs/fig1a.pdf", width = 30, height = 15)
 
 # Output reference table
@@ -212,14 +212,14 @@ d %>%
 
 m.all <- readRDS("data/saved_models/m.all.RDS")
 m.all.stanfit <- m.all@stanfit
-m.all.out <- extract(m.all@stanfit)
+m.all.out <- rstan::extract(m.all@stanfit)
 
 # Generate parameter traceplot
 
 traceplot <- rstan::traceplot(m.all.stanfit, ncol = 4)
 
 levels(traceplot$data$parameter) <- c(
-  "Intercept", "Species Type",
+  "Intercept", "Host Species Type",
   "Bracamonte et al. 2019", "Davy et al. 2017", "Ellison et al. 2015",
   "Eskew et al. 2018", "Fuess et al. 2017", "Poorten and Rosenblum 2016",
   "Sutherland et al. 2014",
@@ -263,7 +263,7 @@ m.all.summary %>%
   ) %>%
   relabel_predictors(
     a = "Intercept",
-    bS = "Species Type",
+    bS = "Host Species Type",
     sigma_study = "σ (Study)",
     a_study.1 = "Bracamonte et al. 2019", 
     a_study.2 = "Davy et al. 2017", 
@@ -276,7 +276,7 @@ m.all.summary %>%
   dw_plot(
     dot_args = list(size = 3, color = "darkgreen"),
     whisker_args = list(color = "forestgreen")
-  )+
+  ) +
   xlab("Parameter Estimate") +
   xlim(-7.5, 7.5) +
   theme_minimal() + 
@@ -290,108 +290,18 @@ m.all.summary %>%
 
 ggsave("outputs/figS3.jpeg", width = 6, height = 4)
 
-preds <- data.frame(
-  species_type = c(
-    rep("non-susceptible", length(m.all.out$a)), 
-    rep("susceptible", length(m.all.out$a))
-  ),
-  probs = c(logistic(m.all.out$a), logistic(m.all.out$a + m.all.out$bS))
-)
-
-preds.summary <- preds %>%
-  group_by(species_type) %>%
-  summarize(
-    median = median(probs),
-    mean = mean(probs),
-    lower = HPDI(probs, prob = 0.95)[1],
-    upper = HPDI(probs, prob = 0.95)[2]
-  )
-
-fig1b <- preds %>%
-  ggplot(aes(x = species_type, y = probs, group = species_type)) +
-  ylab("Implied probability of differential gene\nexpression given pathogen exposure") +
-  xlab("Host species type") +
-  ylim(0, 0.4) +
-  #geom_jitter(aes(color = species_type), alpha = 0.2) +
-  geom_sina(aes(color = species_type), alpha = 0.05) +
-  geom_pointrange(
-    data = preds.summary,
-    aes(y = median, ymin = lower, ymax = upper, group = species_type),
-    size = 1
-  ) +
-  scale_color_manual(values = alpha(c("dodgerblue", "firebrick2"), 0.7)) +
-  theme_minimal() +
-  theme(
-    panel.grid.minor.y = element_blank(),
-    panel.grid.major.x = element_blank(),
-    legend.position = "none",
-    axis.text = element_text(size = 14),
-    axis.title = element_text(size = 18),
-  )
-
-fig1b
-
-fig1b <- preds %>%
-  ggplot(aes(x = probs, group = species_type)) +
-  xlab("Implied probability of differential gene expression given pathogen exposure") +
-  ylab("Posterior density") +
-  xlim(0, 0.15) +
-  ylim(0, 125) +
-  geom_density(aes(fill = species_type, color = species_type), size = 2) +
-  scale_color_manual(
-    values = alpha(c("dodgerblue", "firebrick2"), 0.9),
-    name = "Host species type"
-  ) +
-  scale_fill_manual(
-    values = alpha(c("dodgerblue", "firebrick2"), 0.2),
-    name = "Host species type"
-  ) +
-  theme_minimal() +
-  theme(
-    panel.grid.minor.x = element_blank(),
-    panel.grid.minor.y = element_blank(),
-    axis.text = element_text(size = 32),
-    axis.title = element_text(size = 36),
-    legend.title = element_blank(),
-    legend.position = "none",
-    legend.text = element_text(size = 36)
-  ) +
-  annotate(
-    geom = "text",
-    label = "non-susceptible host",
-    x = 0.03, y = 80,
-    size = 14,
-    color = alpha("dodgerblue", 0.9)
-  ) +
-  annotate(
-    geom = "text",
-    label = "susceptible host",
-    x = 0.04, y = 27,
-    size = 14,
-    color = alpha("firebrick2", 0.9)
-  )
-
-fig1b
-
-ggsave("outputs/fig1b.jpeg", width = 20, height = 10)
-
-plot_grid(fig1a, fig1b, labels = c("A", "B"), nrow = 2)
-
-ggsave("outputs/test.jpeg", width = 30, height = 30)
-
-
 # Load m.anno model
 
 m.anno <- readRDS("data/saved_models/m.anno.RDS")
 m.anno.stanfit <- m.anno@stanfit
-m.anno.out <- extract(m.anno@stanfit)
+m.anno.out <- rstan::extract(m.anno@stanfit)
 
 # Generate parameter traceplot
 
 traceplot <- rstan::traceplot(m.anno.stanfit, ncol = 4)
 
 levels(traceplot$data$parameter) <- c(
-  "Global Intercept", "Species Type",
+  "Global Intercept", "Host Species Type",
   "Bracamonte et al. 2019", "Davy et al. 2017", "Ellison et al. 2015",
   "Eskew et al. 2018", "Fuess et al. 2017", "Poorten and Rosenblum 2016",
   "Sutherland et al. 2014",
@@ -435,7 +345,7 @@ m.anno.summary %>%
   ) %>%
   relabel_predictors(
     a = "Intercept",
-    bS = "Species Type",
+    bS = "Host Species Type",
     sigma_study = "σ (Study)",
     a_study.1 = "Bracamonte et al. 2019", 
     a_study.2 = "Davy et al. 2017", 
@@ -465,7 +375,114 @@ ggsave("outputs/figS5.jpeg", width = 6, height = 4)
 #==============================================================================
 
 
-# Generate Figure 2 (have to manually export from RStudio)
+# Figure 1b code
+
+# Generate implied probability of differential expression values for both
+# species types using posterior samples from the full fit model
+
+preds <- data.frame(
+  species_type = c(
+    rep("non-susceptible", length(m.all.out$a)), 
+    rep("susceptible", length(m.all.out$a))
+  ),
+  probs = c(logistic(m.all.out$a), logistic(m.all.out$a + m.all.out$bS))
+)
+
+# Summarize these implied probability values
+
+preds.summary <- preds %>%
+  group_by(species_type) %>%
+  summarize(
+    median = median(probs),
+    mean = mean(probs),
+    lower = HPDI(probs, prob = 0.95)[1],
+    upper = HPDI(probs, prob = 0.95)[2]
+  )
+
+# Plot and save Figure 1b
+
+# Sina plot version
+
+fig1b <- preds %>%
+  ggplot(aes(x = species_type, y = probs, group = species_type)) +
+  ylab("Implied probability of differential gene\nexpression given pathogen exposure") +
+  xlab("Host species type") +
+  ylim(0, 0.4) +
+  geom_sina(aes(color = species_type), alpha = 0.05) +
+  geom_pointrange(
+    data = preds.summary,
+    aes(y = median, ymin = lower, ymax = upper, group = species_type),
+    size = 1
+  ) +
+  scale_color_manual(values = alpha(c("dodgerblue", "firebrick2"), 0.7)) +
+  theme_minimal() +
+  theme(
+    panel.grid.minor.y = element_blank(),
+    panel.grid.major.x = element_blank(),
+    legend.position = "none",
+    axis.text = element_text(size = 14),
+    axis.title = element_text(size = 18),
+  )
+
+fig1b
+
+# Density plot version
+
+fig1b <- preds %>%
+  ggplot(aes(x = probs, group = species_type)) +
+  xlab("\nImplied probability of differential gene expression given pathogen exposure") +
+  ylab("Posterior density") +
+  xlim(0, 0.15) +
+  ylim(0, 125) +
+  geom_density(aes(fill = species_type, color = species_type), size = 2) +
+  scale_color_manual(
+    values = alpha(c("dodgerblue", "firebrick2"), 0.9),
+    name = "Host species type"
+  ) +
+  scale_fill_manual(
+    values = alpha(c("dodgerblue", "firebrick2"), 0.2),
+    name = "Host species type"
+  ) +
+  theme_minimal() +
+  theme(
+    panel.grid.minor.x = element_blank(),
+    panel.grid.minor.y = element_blank(),
+    axis.text = element_text(size = 32),
+    axis.title = element_text(size = 35),
+    legend.position = "none",
+  ) +
+  annotate(
+    geom = "text",
+    label = "non-susceptible host species",
+    x = 0.04, y = 80,
+    size = 14,
+    color = alpha("dodgerblue", 0.9)
+  ) +
+  annotate(
+    geom = "text",
+    label = "susceptible host species",
+    x = 0.05, y = 27,
+    size = 14,
+    color = alpha("firebrick2", 0.9)
+  )
+
+fig1b
+
+ggsave("outputs/fig1b.pdf", width = 20, height = 10)
+
+# Save Figure 1a and 1b together as Figure 1
+
+plot_grid(
+  fig1a, fig1b, nrow = 2, hjust = -1,
+  labels = c("(a)", "(b)"), label_size = 40
+)
+
+ggsave("outputs/fig1.pdf", width = 30, height = 30)
+
+#==============================================================================
+
+
+# Generate Figure 2 (have to manually export from RStudio to get a jpeg)
 
 grViz("data/figures/flowchart.dot")
 
