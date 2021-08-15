@@ -58,7 +58,11 @@ d <- read_csv("data/quantitative_summary/wild_expression_data.csv") %>%
     group_de = paste(comparison, second_line, sep = "\n")
     %>%
       as.factor(),
-    susceptibility_binary = ifelse(susceptibility == "susceptible", 1, 0)
+    susceptibility_binary = ifelse(susceptibility == "susceptible", 1, 0),
+    # Binary variable indicating whether or not the pathogen was Bd
+    bd_binary = ifelse(pathogen == "B. dendrobatidis", 1, 0),
+    # Binary variable indicating whether or not the assay used was a microarray
+    microarray_binary = ifelse(assay == "microarray", 1, 0)
   )
 
 #==============================================================================
@@ -301,7 +305,7 @@ m.anno.out <- rstan::extract(m.anno@stanfit)
 traceplot <- rstan::traceplot(m.anno.stanfit, ncol = 4)
 
 levels(traceplot$data$parameter) <- c(
-  "Global Intercept", "Host Species Type",
+  "Intercept", "Host Species Type",
   "Bracamonte et al. 2019", "Davy et al. 2017", "Ellison et al. 2015",
   "Eskew et al. 2018", "Fuess et al. 2017", "Poorten and Rosenblum 2016",
   "Sutherland et al. 2014",
@@ -371,6 +375,195 @@ m.anno.summary %>%
   geom_vline(xintercept = 0, colour = "black", linetype = 2)
 
 ggsave("outputs/figS5.jpeg", width = 6, height = 4)
+
+# Load m.pathogen.type model
+
+m.pathogen.type <- readRDS("data/saved_models/m.pathogen.type.RDS")
+m.pathogen.type.stanfit <- m.pathogen.type@stanfit
+m.pathogen.type.out <- rstan::extract(m.pathogen.type@stanfit)
+
+# Generate parameter traceplot
+
+traceplot <- rstan::traceplot(m.pathogen.type.stanfit, 
+                              pars = "lp__", include = FALSE, 
+                              ncol = 4)
+
+levels(traceplot$data$parameter) <- c(
+  "Intercept", "Host Species Type",
+  "Bd Study?", "Host Species Type * Bd Study?",
+  "Bracamonte et al. 2019", "Davy et al. 2017", "Ellison et al. 2015",
+  "Eskew et al. 2018", "Fuess et al. 2017", "Poorten and Rosenblum 2016",
+  "Sutherland et al. 2014",
+  "σ (Study)"
+)
+
+traceplot + 
+  scale_color_viridis(discrete = TRUE, option = "plasma", end = 0.85) +
+  ggtitle("Parameter trace plots for hierarchical Bayesian model of differential gene expression (interactive effect of pathogen type)") +
+  theme(
+    text = element_text(size = 14, color = "black"),
+    plot.title = element_text(size = 18),
+    strip.text.x = element_text(size = 14, face = "bold"),
+    legend.position = "none"
+  )
+
+ggsave("outputs/figS6.jpeg", width = 15, height = 10)
+
+# Generate parameter dotchart
+
+m.pathogen.type.summary <- as.data.frame(m.pathogen.type.out) %>%
+  select(-13) %>%
+  pivot_longer(cols = 1:12, names_to = "parameter") %>%
+  group_by(parameter) %>%
+  summarize(
+    mean = mean(value),
+    median = median(value),
+    lower = HPDI(value, prob = 0.95)[1],
+    upper = HPDI(value, prob = 0.95)[2]
+  )
+
+m.pathogen.type.summary
+precis(m.pathogen.type, prob = 0.95, depth = 2)
+
+m.pathogen.type.summary %>%
+  rename(
+    term = parameter,
+    estimate = mean, 
+    conf.low = lower, 
+    conf.high = upper
+  ) %>%
+  relabel_predictors(
+    a = "Intercept",
+    bS = "Host Species Type",
+    bB = "Bd Study?",
+    bI = "Host Species Type * Bd Study?",
+    sigma_study = "σ (Study)",
+    a_study.1 = "Bracamonte et al. 2019", 
+    a_study.2 = "Davy et al. 2017", 
+    a_study.3 = "Ellison et al. 2015",
+    a_study.4 = "Eskew et al. 2018", 
+    a_study.5 = "Fuess et al. 2017", 
+    a_study.6 = "Poorten and Rosenblum 2016",
+    a_study.7 = "Sutherland et al. 2014"
+  ) %>%
+  dw_plot(
+    dot_args = list(size = 3, color = "darkgreen"),
+    whisker_args = list(color = "forestgreen")
+  )+
+  xlab("Parameter Estimate") +
+  xlim(-8.5, 6.5) +
+  theme_minimal() + 
+  theme(
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor.x = element_blank(),
+    text = element_text(size = 14, color = "black"),
+    legend.position = "none"
+  ) +
+  geom_vline(xintercept = 0, colour = "black", linetype = 2)
+
+ggsave("outputs/figS7.jpeg", width = 6, height = 4)
+
+# Load m.assay.type model
+
+m.assay.type <- readRDS("data/saved_models/m.assay.type.RDS")
+m.assay.type.stanfit <- m.assay.type@stanfit
+m.assay.type.out <- rstan::extract(m.assay.type@stanfit)
+
+# Generate parameter traceplot
+
+traceplot <- rstan::traceplot(m.assay.type.stanfit, 
+                              pars = "lp__", include = FALSE, 
+                              ncol = 4)
+
+levels(traceplot$data$parameter) <- c(
+  "Intercept", "Host Species Type",
+  "Microarray Study?", "Host Species Type * Microarray Study?",
+  "Bracamonte et al. 2019", "Davy et al. 2017", "Ellison et al. 2015",
+  "Eskew et al. 2018", "Fuess et al. 2017", "Poorten and Rosenblum 2016",
+  "Sutherland et al. 2014",
+  "σ (Study)"
+)
+
+traceplot + 
+  scale_color_viridis(discrete = TRUE, option = "plasma", end = 0.85) +
+  ggtitle("Parameter trace plots for hierarchical Bayesian model of differential gene expression (interactive effect of assay type)") +
+  theme(
+    text = element_text(size = 14, color = "black"),
+    plot.title = element_text(size = 18),
+    strip.text.x = element_text(size = 12, face = "bold"),
+    legend.position = "none"
+  )
+
+ggsave("outputs/figS8.jpeg", width = 15, height = 10)
+
+# Generate parameter dotchart
+
+m.assay.type.summary <- as.data.frame(m.assay.type.out) %>%
+  select(-13) %>%
+  pivot_longer(cols = 1:12, names_to = "parameter") %>%
+  group_by(parameter) %>%
+  summarize(
+    mean = mean(value),
+    median = median(value),
+    lower = HPDI(value, prob = 0.95)[1],
+    upper = HPDI(value, prob = 0.95)[2]
+  )
+
+m.assay.type.summary
+precis(m.assay.type, prob = 0.95, depth = 2)
+
+m.assay.type.summary %>%
+  rename(
+    term = parameter,
+    estimate = mean, 
+    conf.low = lower, 
+    conf.high = upper
+  ) %>%
+  relabel_predictors(
+    a = "Intercept",
+    bS = "Host Species Type",
+    bM = "Microarray Study?",
+    bI = "Host Species Type * Microarray Study?",
+    sigma_study = "σ (Study)",
+    a_study.1 = "Bracamonte et al. 2019", 
+    a_study.2 = "Davy et al. 2017", 
+    a_study.3 = "Ellison et al. 2015",
+    a_study.4 = "Eskew et al. 2018", 
+    a_study.5 = "Fuess et al. 2017", 
+    a_study.6 = "Poorten and Rosenblum 2016",
+    a_study.7 = "Sutherland et al. 2014"
+  ) %>%
+  dw_plot(
+    dot_args = list(size = 3, color = "darkgreen"),
+    whisker_args = list(color = "forestgreen")
+  )+
+  xlab("Parameter Estimate") +
+  xlim(-8.5, 6.5) +
+  theme_minimal() + 
+  theme(
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor.x = element_blank(),
+    text = element_text(size = 14, color = "black"),
+    legend.position = "none"
+  ) +
+  geom_vline(xintercept = 0, colour = "black", linetype = 2)
+
+ggsave("outputs/figS9.jpeg", width = 6, height = 4)
+
+# Output model parameter summary with derived, microarray-specific host 
+# species type effect
+
+as.data.frame(m.assay.type.out) %>%
+  select(-13) %>%
+  mutate(bS_microarrays = bS + bI) %>%
+  pivot_longer(cols = 1:13, names_to = "parameter") %>%
+  group_by(parameter) %>%
+  summarize(
+    mean = mean(value),
+    median = median(value),
+    lower = HPDI(value, prob = 0.95)[1],
+    upper = HPDI(value, prob = 0.95)[2]
+  )
 
 #==============================================================================
 
