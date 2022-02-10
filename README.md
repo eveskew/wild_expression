@@ -2,7 +2,7 @@
 
 This repository contains code, data, and figures that support:
 
-Eskew, E.A., D. Fraser, M.J. Vonhof, M.L. Pinsky, and B. Maslo. In review. Host gene expression in wildlife disease: making sense of species-level responses.
+Eskew, E.A., D. Fraser, M.J. Vonhof, M.L. Pinsky, and B. Maslo. 2021. [Host gene expression in wildlife disease: making sense of species-level responses](https://doi.org/10.1111/mec.16172). Molecular Ecology 30: 6517-6530.
 
 --- 
 
